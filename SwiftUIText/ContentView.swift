@@ -6,83 +6,64 @@
 //
 
 import SwiftUI
-import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
+    
+    static let dateFormat: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY년 M월 d일"
+        return formatter
+    }()
+    
+    var today = Date()
+    
+    var trueOrFalse : Bool = false
+    
+    var number : Int = 123
+    
+    var body: some View{
+        
+        VStack{
+        Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ")
+            .tracking(2)
+            
+            .font(.system(.body, design: .rounded))
+            .fontWeight(.medium)
+            .multilineTextAlignment(.center)
+            .lineLimit(nil)
+            .lineSpacing(10)
+            .truncationMode(.tail)
+            
+            .shadow(color: Color.red, radius: 1.5, x: 10, y: 10)
+            
+            .padding(.vertical,20)
+            .background(Color.yellow)
+            .cornerRadius(20)
+            
+            .padding()
+            .background(Color.green)
+            .cornerRadius(20)
+            
+            .padding()
+            
+         Text("안녕하세요")
+                .background(Color.gray)
+                .foregroundColor(Color.white)
+            
+            Text("오늘의 날짜 : \(today, formatter: ContentView.dateFormat)")
+            
+            Text("진실 혹은 거짓 : \(String(trueOrFalse))")
+            
+            
+            Text("숫자 : \(number)")
+            
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
-    var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+struct ContentView_Previews: PreviewProvider{
+    static var previews: some View{
+        ContentView()
     }
 }
